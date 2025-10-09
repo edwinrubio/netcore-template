@@ -77,12 +77,12 @@ spec:
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
           repoUrl: ${{ parameters.repoUrl }}
           system: ${{ parameters.system }}
-    - id: acme:file:create
+    - id: create-readme
       name: Create a README file
-      action: acme:file:create
+      action: fs:write
       input:
-        filename: README.md
-        contents: |
+        path: README.md
+        content: |
           # ${{ parameters.name }}          
           ${{ parameters.description }}
           
