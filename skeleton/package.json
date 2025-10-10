@@ -1,0 +1,12 @@
+{
+  "name": "${{ values.name }}",
+  "version": "1.0.0",
+  "description": "${{ values.description }}",
+  "scripts": {
+    "build": "dotnet build",
+    "test": "dotnet test",
+    "run": "dotnet run"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

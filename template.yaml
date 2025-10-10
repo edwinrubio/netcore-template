@@ -77,16 +77,44 @@ spec:
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
           repoUrl: ${{ parameters.repoUrl }}
           system: ${{ parameters.system }}
-    - id: acme:file:create
-      name: Create a README file
-      action: acme:file:create
+    # - id: acme:file:create
+    #   name: Create a README file
+    #   action: acme:file:create
+    #   input:
+    #     filename: README.md
+    #     contents: |
+    #       # ${{ parameters.name }}          
+    #       ${{ parameters.description }}
+    #       
+    #       This is a new .NET 8 project created with 💚 using Backstage.
+    - id: debug-token
+      name: Debug Token Information
+      action: debug:log
       input:
-        filename: README.md
-        contents: |
-          # ${{ parameters.name }}          
-          ${{ parameters.description }}
-          
-          This is a new .NET 8 project created with 💚 using Backstage.
+        message: |
+          Token validation:
+          - Token available: ${{ secrets.USER_OAUTH_TOKEN and 'Yes' or 'No' }}
+          - Repo URL: ${{ parameters.repoUrl }}
+          - Owner: ${{ parameters.repoUrl | parseRepoUrl | pick('owner') }}
+          - Repo: ${{ parameters.repoUrl | parseRepoUrl | pick('repo') }}
+    - id: debug-token
+      name: Debug Token Information
+      action: debug:log
+      input:
+        message: |
+          Token validation:
+          - Token available: ${{ secrets.USER_OAUTH_TOKEN and 'Yes' or 'No' }}
+          - Repo URL: ${{ parameters.repoUrl }}
+          - Owner: ${{ parameters.repoUrl | parseRepoUrl | pick('owner') }}
+          - Repo: ${{ parameters.repoUrl | parseRepoUrl | pick('repo') }}
+    - id: debug-files
+      name: Debug Files in Workspace
+      action: debug:log
+      input:
+        message: |
+          Workspace content check:
+          - Working directory should contain skeleton files
+          - Checking if template files were fetched correctly
     - id: publish
       name: Publish
       action: publish:github
@@ -96,22 +124,26 @@ spec:
         gitCommitMessage: Create scaffold
         topics: ["backstage-include", "dotnet", "webapi"]
         defaultBranch: main
-    - id: github:ghas:configure
-      name: Configure GitHub Advanced Security
-      action: github:ghas:configure
-      input:
-        repoUrl: ${{ parameters.repoUrl }}
-        code_scanning: enabled
-        secret_scanning: enabled
-        push_secret_protection: enabled
-        dependabot: enabled
-    - id: github-action
-      name: Stating GitHub action
-      action: github:actions:dispatch
-      input:
-        workflowId: ci.yml # ID of GitHub action WorkFlow
-        repoUrl: ${{ parameters.repoUrl }}
-        branchOrTagName: "main"
+        token: ${{ secrets.USER_OAUTH_TOKEN }}
+        gitAuthorName: Backstage
+        gitAuthorEmail: backstage@example.com
+    # - id: github:ghas:configure
+    #   name: Configure GitHub Advanced Security
+    #   action: github:ghas:configure
+    #   input:
+    #     repoUrl: ${{ parameters.repoUrl }}
+    #     code_scanning: enabled
+    #     secret_scanning: enabled
+    #     push_secret_protection: enabled
+    #     dependabot: enabled
+    #     token: ${{ secrets.USER_OAUTH_TOKEN }} # Explicitly pass the token for validation
+    # - id: github-action
+    #   name: Stating GitHub action
+    #   action: github:actions:dispatch
+    #   input:
+    #     workflowId: ci.yml # ID of GitHub action WorkFlow
+    #     repoUrl: ${{ parameters.repoUrl }}
+    #     branchOrTagName: "main"
     - id: register
       name: Register
       action: catalog:register
